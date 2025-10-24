@@ -7,10 +7,20 @@ export default async function migrate() {
   })
   const v = version ? version.version : 0
   if (!version) {
-    await dbVersionCols().insertOne({
-      tag: "base",
-      version: 0,
-    })
+    await dbVersionCols().updateOne(
+      {
+        tag: "base",
+        version: 0,
+      },
+      {
+        $set: {
+          version: 0,
+        },
+      },
+      {
+        upsert: true,
+      }
+    )
   }
   if (v === 0) {
     // 1 版本数据库处理，可以添加/删除索引，mongo schema
