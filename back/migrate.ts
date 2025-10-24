@@ -5,7 +5,7 @@ export default async function migrate() {
   const version = await dbVersionCols().findOne({
     tag: "base",
   })
-  const v = version ? version.version : 0
+  let v = version ? version.version : 0
   if (!version) {
     await dbVersionCols().updateOne(
       {
@@ -28,6 +28,7 @@ export default async function migrate() {
     await pingHisCols().createIndex({ time: -1 })
     await dbVersionCols().updateOne({ tag: "base" }, { $set: { version: 1 } })
     console.info("迁移到数据库版本 v.1")
+    v++
   }
   return v
 }
