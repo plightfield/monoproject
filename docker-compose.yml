@@ -1,0 +1,51 @@
+services:
+  mongo:
+    image: mongo
+    container_name: template-mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: 1234
+      TZ: Asia/Shanghai
+    ports:
+      - "5552:27017"
+    volumes:
+      - ./mongo-data:/data/db
+    logging:
+      driver: "none"
+  redis:
+    image: redis
+    container_name: template-redis
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "1234"]
+    environment:
+      TZ: Asia/Shanghai
+    ports:
+      - "5553:6379"
+    volumes:
+      - ./redis-data:/data
+    logging:
+      driver: "none"
+  backend:
+    build:
+      context: .
+    container_name: template-backend
+    environment:
+      TZ: Asia/Shanghai
+    depends_on:
+      - mongo
+      - redis
+    volumes:
+      - ./dist:/app/output
+    command: sh -c "cp -a /app/dist/. /app/output/ && cd /app && pnpm back:prod"
+
+  nginx:
+    image: nginx:alpine
+    container_name: template-nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./dist:/usr/share/nginx/html/dist:ro
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    environment:
+      TZ: Asia/Shanghai
