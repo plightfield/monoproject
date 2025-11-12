@@ -10,8 +10,7 @@ services:
       - "5552:27017"
     volumes:
       - ./mongo-data:/data/db
-    logging:
-      driver: "none"
+
   redis:
     image: redis
     container_name: template-redis
@@ -22,8 +21,7 @@ services:
       - "5553:6379"
     volumes:
       - ./redis-data:/data
-    logging:
-      driver: "none"
+
   backend:
     build:
       context: .

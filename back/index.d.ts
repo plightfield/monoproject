@@ -5,6 +5,7 @@ declare global {
       MONGO_URI: string
       MONGO_NAME: string
       REDIS_URI: string
+      DEFAULT_USER_ID: string
     }
   }
 }

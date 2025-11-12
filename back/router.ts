@@ -1,16 +1,18 @@
 import { t } from "./init"
-import base from "./rpc/base"
+import { getBaseInfo, getPingHis, ping } from "./rpc/base"
 
 const routes = {
-  ...base,
+  ping,
+  getPingHis,
+  getBaseInfo,
 }
 
 for (const key of Object.keys(routes)) {
   const route = routes[key as keyof typeof routes]
   if (route.meta?.openapi) {
-    ;(route.meta.openapi as any).method =
-      route._def.type === "query" ? "GET" : "POST"
-    ;(route.meta.openapi as any).path = `/${key}`
+    const api: { [key: string]: any } = route.meta.openapi
+    api.method = route._def.type === "query" ? "GET" : "POST"
+    api.path = `/${key}`
   }
 }
 

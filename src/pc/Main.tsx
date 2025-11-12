@@ -3,7 +3,7 @@ import rpc from "~/rpc"
 
 export default function Main() {
   useEffect(() => {
-    rpc.ping.query().then((res) => {
+    rpc.ping.mutate().then((res) => {
       console.log(res)
     })
   }, [])
