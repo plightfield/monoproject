@@ -21,3 +21,5 @@
 开发环境：`pnpm back`(后端) + `pnpm dev`(前端)
 
 正式环境：jekins 选择脚本运行：`deploy.sh`，必要时候预先更改脚本执行权限
+
+开发环境接口文档访问地址：localhost:5550/doc
