@@ -60,35 +60,38 @@ app.register(fastifyTRPCPlugin, {
   } as RPCOptions,
 })
 
-export const openApiDocument = generateOpenApiDocument(appRouter, {
-  title: "tRPC OpenAPI",
-  description: "此项目为 trpc 项目，文档进行阐述或外部调用时使用",
-  version: "1.0.0",
-  baseUrl: "http://localhost:5550/rpc",
-  securitySchemes: {
-    bearerAuth: {
-      type: "http",
-      scheme: "bearer",
-      bearerFormat: "JWT",
-      description: "当前为默认官方 token，不过 token 校验",
+if (process.env.NODE_ENV === "development") {
+  // 仅测试环境可以查看文档
+  const openApiDocument = generateOpenApiDocument(appRouter, {
+    title: "tRPC OpenAPI",
+    description: "此项目为 trpc 项目，文档进行阐述或外部调用时使用",
+    version: "1.0.0",
+    baseUrl: "http://localhost:5550/rpc",
+    securitySchemes: {
+      bearerAuth: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+        description: "当前为默认官方 token，不过 token 校验",
+      },
     },
-  },
-})
+  })
 
-app.register(scalarApi, {
-  routePrefix: "/doc",
-  configuration: {
-    content: openApiDocument,
-    authentication: {
-      preferredSecurityScheme: "bearerAuth",
-      http: {
-        bearer: {
-          token: process.env.DEFAULT_USER_ID,
+  app.register(scalarApi, {
+    routePrefix: "/doc",
+    configuration: {
+      content: openApiDocument,
+      authentication: {
+        preferredSecurityScheme: "bearerAuth",
+        http: {
+          bearer: {
+            token: process.env.DEFAULT_USER_ID,
+          },
         },
       },
     },
-  },
-})
+  })
+}
 
 async function main() {
   const addr = await app.listen({ port: 5550, host: "0.0.0.0" })

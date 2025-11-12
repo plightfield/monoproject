@@ -11,7 +11,7 @@ import { subscribeRpcError } from "@/shared/rpc"
 dayjs.locale("zh-cn")
 
 subscribeRpcError((e) => {
-  message.error(e.reason)
+  message.error(e)
 })
 
 createRoot(document.getElementById("root")!).render(

@@ -1,9 +1,11 @@
 import { createTRPCClient, httpBatchLink } from "@trpc/client"
 import type { AppRouter } from "../../back/router"
 
-export function subscribeRpcError(cb: (e: PromiseRejectionEvent) => void) {
+export function subscribeRpcError(cb: (err: string) => void) {
   window.addEventListener("unhandledrejection", (e) => {
-    cb(e)
+    if (e.reason && e.reason.name && e.reason.name === "TRPCClientError") {
+      cb(e.reason.message)
+    }
   })
 }
 
